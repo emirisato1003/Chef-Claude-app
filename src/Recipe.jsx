@@ -14,6 +14,14 @@ export default function Recipe() {
     }
 
     const [recipe, setRecipe] = React.useState("");
+    const recipeSection = React.useRef(null);
+
+    React.useEffect(() => {
+        if (recipe !== "" && recipeSection.current !== null) {
+            recipeSection.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [recipe]);
+
     const [isLoading, setIsLoading] = React.useState(false);
 
     const fetchRecipe = async () => {
@@ -21,7 +29,6 @@ export default function Recipe() {
             setIsLoading(true);
             console.log('Starting to fetch recipe...'); // Debug log
             const recipeMarkdown = await getRecipeFromChefClaude(ingredients);
-            console.log('Recipe received:', recipeMarkdown); // Debug log
             setRecipe(recipeMarkdown);
         } catch (error) {
             console.error('Error fetching recipe:', error);
@@ -31,6 +38,8 @@ export default function Recipe() {
             setIsLoading(false);
         }
     };
+
+
 
     return (
         <main>
@@ -43,7 +52,13 @@ export default function Recipe() {
                 />
                 <button>Add ingredient</button>
             </form>
-            {ingredients.length > 0 && <IngredientsList ingredients={ingredients} fetchRecipe={fetchRecipe} loading={isLoading}/>}
+            {ingredients.length > 0 &&
+                <IngredientsList
+                    ref={recipeSection}
+                    ingredients={ingredients}
+                    fetchRecipe={fetchRecipe}
+                    loading={isLoading}
+                />}
 
             {recipe && <ClaudeRecipe recipe={recipe} />}
         </main>
