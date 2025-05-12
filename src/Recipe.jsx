@@ -39,8 +39,6 @@ export default function Recipe() {
         }
     };
 
-
-
     return (
         <main>
             <form action={addIngredients} className="add-ingredient-form">
